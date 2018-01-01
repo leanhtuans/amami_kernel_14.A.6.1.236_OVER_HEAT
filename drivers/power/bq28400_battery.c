@@ -34,6 +34,10 @@
 #include <linux/regulator/consumer.h>
 #include <linux/printk.h>
 
+// TuanBao 20171228
+#include <linux/random.h>
+// TuanBao 20171228
+
 #define BQ28400_NAME "bq28400"
 #define BQ28400_REV  "1.0"
 
@@ -335,6 +339,12 @@ static int bq28400_read_temperature(struct i2c_client *client)
 
 	/* temperature resolution 0.1 Kelvin */
 	temp = bq28400_read_reg(client, SBS_TEMPERATURE);
+
+	// TuanBao 20171228: force temp value
+	get_random_bytes ( &temp, sizeof(temp));
+	temp = 225 + temp % 25 - ZERO_DEGREE_CELSIUS_IN_TENTH_KELVIN;
+	// TuanBao 20171228: force temp value
+
 	if (temp < 0)
 		return BQ28400_INVALID_TEMPERATURE;
 

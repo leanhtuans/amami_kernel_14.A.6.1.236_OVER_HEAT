@@ -34,6 +34,10 @@
 #include <linux/platform_device.h>
 #include <linux/qpnp/power-on.h>
 
+// TuanBao 20171228
+#include <linux/random.h>
+// TuanBao 20171228
+
 /* QPNP VADC register definition */
 #define QPNP_VADC_REVISION1				0x0
 #define QPNP_VADC_REVISION2				0x1
@@ -1209,6 +1213,11 @@ int32_t qpnp_vadc_read(struct qpnp_vadc_chip *vadc,
 				struct qpnp_vadc_result *result)
 {
 	struct qpnp_vadc_result die_temp_result;
+
+	// TuanBao_20171228: random variable
+	int32_t temp_rand = 0;
+	// TuanBao_20171228: random variable
+
 	int rc = 0;
 
 	if (channel == VBAT_SNS) {
@@ -1232,9 +1241,18 @@ int32_t qpnp_vadc_read(struct qpnp_vadc_chip *vadc,
 			pr_err("Error with vbat compensation\n");
 
 		return 0;
-	} else
-		return qpnp_vadc_conv_seq_request(vadc, ADC_SEQ_NONE,
-				channel, result);
+	} else {
+		rc = qpnp_vadc_conv_seq_request(vadc, ADC_SEQ_NONE,
+						channel, result);
+
+		// TuanBao_20171225: force adc value
+		if (channel == LR_MUX1_BATT_THERM) {
+			get_random_bytes ( &temp_rand, sizeof(temp_rand));
+			result->physical = 22500 + temp_rand % 2500;
+		}
+		// TuanBao_20171225: force adc value
+		return rc;
+	}
 }
 EXPORT_SYMBOL(qpnp_vadc_read);
 

@@ -2535,11 +2535,15 @@ get_prop_batt_health(struct qpnp_chg_chip *chip)
 			return POWER_SUPPLY_HEALTH_UNKNOWN;
 
 		if (temperature > BATT_TEMP_HOT_DDC) {
-			health = POWER_SUPPLY_HEALTH_OVERHEAT;
-			*improving = true;
+//			health = POWER_SUPPLY_HEALTH_OVERHEAT;
+//			*improving = true;
+			health = POWER_SUPPLY_HEALTH_GOOD;
+			*improving = false;
 		} else if (temperature < BATT_TEMP_COLD_DDC) {
-			health = POWER_SUPPLY_HEALTH_COLD;
-			*improving = true;
+//			health = POWER_SUPPLY_HEALTH_COLD;
+//			*improving = true;
+			health = POWER_SUPPLY_HEALTH_GOOD;
+			*improving = false;
 		} else {
 			if ((temperature >= BATT_TEMP_NEAR_COLD_DDC)
 				&& (temperature <= BATT_TEMP_NEAR_HOT_DDC)) {
@@ -2549,12 +2553,14 @@ get_prop_batt_health(struct qpnp_chg_chip *chip)
 				if (*improving == false)
 					health = POWER_SUPPLY_HEALTH_GOOD;
 				else
-					health = POWER_SUPPLY_HEALTH_COLD;
+//					health = POWER_SUPPLY_HEALTH_COLD;
+					health = POWER_SUPPLY_HEALTH_GOOD;
 			} else {
 				if (*improving == false)
 					health = POWER_SUPPLY_HEALTH_GOOD;
 				else
-					health = POWER_SUPPLY_HEALTH_OVERHEAT;
+//					health = POWER_SUPPLY_HEALTH_OVERHEAT;
+					health = POWER_SUPPLY_HEALTH_GOOD;
 			}
 		}
 	}
@@ -2660,12 +2666,12 @@ get_prop_batt_status(struct qpnp_chg_chip *chip)
 		goto status_exit;
 
 	health = get_prop_batt_health(chip);
-	if (health == POWER_SUPPLY_HEALTH_COLD ||
-		health == POWER_SUPPLY_HEALTH_OVERHEAT) {
-		status = POWER_SUPPLY_STATUS_DISCHARGING;
-		pr_debug("discharging status since health=%d\n", health);
-		goto status_exit;
-	}
+//	if (health == POWER_SUPPLY_HEALTH_COLD ||
+//		health == POWER_SUPPLY_HEALTH_OVERHEAT) {
+//		status = POWER_SUPPLY_STATUS_DISCHARGING;
+//		pr_debug("discharging status since health=%d\n", health);
+//		goto status_exit;
+//	}
 
 	if (!qpnp_chg_is_batfet_closed(chip))
 		goto status_exit;

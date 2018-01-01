@@ -370,7 +370,10 @@ if ($hz eq '--can') {
 	}
 
 	@val = @{$canned_values{$hz}};
-	if (!defined(@val)) {
+	# TuanBao 20171221
+	#if (!defined(@val)) {
+	if (@val) {
+	# TuanBao 20171221
 		@val = compute_values($hz);
 	}
 	output($hz, @val);
